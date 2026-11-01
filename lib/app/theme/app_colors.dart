@@ -21,6 +21,10 @@ class AppColors {
   static const Color balanceLight = Color(0xFF64B5F6);
   static const Color balanceBg = Color(0xFFE3F2FD);
 
+  static const Color customers = Color(0xFF8054C7);
+  static const Color customersLight = Color(0xFFB39DDB);
+  static const Color customersBg = Color(0xFFF3EAFE);
+
   static const Color background = Color(0xFFF5F7FA);
   static const Color card = Colors.white;
   static const Color scaffold = Color(0xFFF5F7FA);
@@ -64,6 +68,9 @@ class AppColors {
   static const Color darkWithdrawalBg = Color(0xFF3B1F1F);
   static const Color balanceAccent = Color(0xFF64B5F6);
   static const Color darkBalanceBg = Color(0xFF16324F);
+
+  static const Color customersAccent = Color(0xFFD1C4E9);
+  static const Color darkCustomersBg = Color(0xFF292039);
 }
 
 /// Theme-aware semantic colors resolved through [ThemeData.extensions].
@@ -91,6 +98,8 @@ class AppThemeColors extends ThemeExtension<AppThemeColors> {
   final Color withdrawalBg;
   final Color balance;
   final Color balanceBg;
+  final Color customers;
+  final Color customersBg;
 
   const AppThemeColors({
     required this.scaffold,
@@ -110,6 +119,8 @@ class AppThemeColors extends ThemeExtension<AppThemeColors> {
     required this.withdrawalBg,
     required this.balance,
     required this.balanceBg,
+    required this.customers,
+    required this.customersBg,
   });
 
   static const AppThemeColors light = AppThemeColors(
@@ -130,6 +141,8 @@ class AppThemeColors extends ThemeExtension<AppThemeColors> {
     withdrawalBg: AppColors.withdrawalBg,
     balance: AppColors.balance,
     balanceBg: AppColors.balanceBg,
+    customers: AppColors.customers,
+    customersBg: AppColors.customersBg,
   );
 
   static const AppThemeColors dark = AppThemeColors(
@@ -150,6 +163,8 @@ class AppThemeColors extends ThemeExtension<AppThemeColors> {
     withdrawalBg: AppColors.darkWithdrawalBg,
     balance: AppColors.balanceAccent,
     balanceBg: AppColors.darkBalanceBg,
+    customers: AppColors.customersAccent,
+    customersBg: AppColors.darkCustomersBg,
   );
 
   @override
@@ -171,6 +186,8 @@ class AppThemeColors extends ThemeExtension<AppThemeColors> {
     Color? withdrawalBg,
     Color? balance,
     Color? balanceBg,
+    Color? customers,
+    Color? customersBg,
   }) {
     return AppThemeColors(
       scaffold: scaffold ?? this.scaffold,
@@ -190,6 +207,8 @@ class AppThemeColors extends ThemeExtension<AppThemeColors> {
       withdrawalBg: withdrawalBg ?? this.withdrawalBg,
       balance: balance ?? this.balance,
       balanceBg: balanceBg ?? this.balanceBg,
+      customers: customers ?? this.customers,
+      customersBg: customersBg ?? this.customersBg,
     );
   }
 
@@ -214,6 +233,8 @@ class AppThemeColors extends ThemeExtension<AppThemeColors> {
       withdrawalBg: Color.lerp(withdrawalBg, other.withdrawalBg, t)!,
       balance: Color.lerp(balance, other.balance, t)!,
       balanceBg: Color.lerp(balanceBg, other.balanceBg, t)!,
+      customers: Color.lerp(customers, other.customers, t)!,
+      customersBg: Color.lerp(customersBg, other.customersBg, t)!,
     );
   }
 }

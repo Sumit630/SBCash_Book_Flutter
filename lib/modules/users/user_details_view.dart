@@ -20,20 +20,24 @@ class UserDetailsView extends StatelessWidget {
     final userId = args?['userId'] as String? ?? '';
     final user = controller.findUserById(userId);
 
-    if (user == null) {
+    return Obx(() {
+      final user = controller.findUserById(userId);
+      if (user == null) {
+        return Scaffold(
+          appBar: AppBar(title: const Text('Customer Details')),
+          body: const EmptyState(
+            icon: Icons.person_off_outlined,
+            title: 'Customer Not Found',
+            subtitle: 'This customer may have been deleted.',
+          ),
+        );
+      }
+
       return Scaffold(
-        appBar: AppBar(title: const Text('Customer Details')),
-        body: const EmptyState(
-          icon: Icons.person_off_outlined,
-          title: 'Customer Not Found',
-          subtitle: 'This customer may have been deleted.',
-        ),
+        backgroundColor: context.colors.scaffold,
+        body: _UserDetailsBody(user: user, controller: controller),
       );
-    }
-    return Scaffold(
-      backgroundColor: context.colors.scaffold,
-      body: _UserDetailsBody(user: user, controller: controller),
-    );
+    });
   }
 }
 
@@ -46,7 +50,12 @@ class _UserDetailsBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final initials = user.name.isNotEmpty
-        ? user.name.split(' ').map((e) => e.isEmpty ? '' : e[0]).take(2).join().toUpperCase()
+        ? user.name
+            .split(' ')
+            .map((e) => e.isEmpty ? '' : e[0])
+            .take(2)
+            .join()
+            .toUpperCase()
         : '?';
 
     final colors = context.colors;
@@ -60,7 +69,7 @@ class _UserDetailsBody extends StatelessWidget {
       return NestedScrollView(
         headerSliverBuilder: (context, innerBoxIsScrolled) => [
           SliverAppBar(
-            expandedHeight: 180,
+            expandedHeight: 170,
             pinned: true,
             backgroundColor: AppColors.primary,
             flexibleSpace: FlexibleSpaceBar(
@@ -72,134 +81,153 @@ class _UserDetailsBody extends StatelessWidget {
                     colors: [AppColors.primary, AppColors.primaryDark],
                   ),
                 ),
-                padding: const EdgeInsets.fromLTRB(20, 40, 20, 16),
-                child: SafeArea(
-                  child: Column(
-                    children: [
-                      const Spacer(),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Container(
-                            width: 64,
-                            height: 64,
-                            decoration: BoxDecoration(
-                              color: AppColors.textWhite.withOpacity(0.18),
-                              borderRadius: BorderRadius.circular(18),
-                              border: Border.all(color: AppColors.textWhite.withOpacity(0.25)),
-                            ),
-                            alignment: Alignment.center,
-                            child: Text(
-                              initials,
-                              style: const TextStyle(
-                                color: AppColors.textWhite,
-                                fontSize: 24,
-                                fontWeight: FontWeight.w700,
-                              ),
+                padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Container(
+                          width: 54,
+                          height: 54,
+                          decoration: BoxDecoration(
+                            color: AppColors.textWhite.withOpacity(0.18),
+                            borderRadius: BorderRadius.circular(14),
+                            border: Border.all(
+                                color: AppColors.textWhite.withOpacity(0.25)),
+                          ),
+                          alignment: Alignment.center,
+                          child: Text(
+                            initials,
+                            style: const TextStyle(
+                              color: AppColors.textWhite,
+                              fontSize: 20,
+                              fontWeight: FontWeight.w700,
                             ),
                           ),
-                          const SizedBox(width: 14),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  user.name,
-                                  style: const TextStyle(
-                                    color: AppColors.textWhite,
-                                    fontSize: 22,
-                                    fontWeight: FontWeight.w700,
-                                  ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                user.name,
+                                style: const TextStyle(
+                                  color: AppColors.textWhite,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w700,
                                 ),
-                                if (user.phone != null && user.phone!.isNotEmpty) ...[
-                                  const SizedBox(height: 2),
-                                  Row(
-                                    children: [
-                                      const Icon(
-                                        Icons.phone,
-                                        size: 14,
+                              ),
+                              if (user.phone != null &&
+                                  user.phone!.isNotEmpty) ...[
+                                Row(
+                                  children: [
+                                    const Icon(
+                                      Icons.phone,
+                                      size: 12,
+                                      color: Color(0xFFBBDEFB),
+                                    ),
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      user.phone!,
+                                      style: const TextStyle(
                                         color: Color(0xFFBBDEFB),
+                                        fontSize: 11,
                                       ),
-                                      const SizedBox(width: 4),
-                                      Text(
-                                        user.phone!,
+                                    ),
+                                  ],
+                                ),
+                              ],
+                              if (user.address != null &&
+                                  user.address!.isNotEmpty) ...[
+                                Row(
+                                  children: [
+                                    const Icon(
+                                      Icons.location_on,
+                                      size: 12,
+                                      color: Color(0xFFBBDEFB),
+                                    ),
+                                    const SizedBox(width: 4),
+                                    Expanded(
+                                      child: Text(
+                                        user.address!,
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
                                         style: const TextStyle(
                                           color: Color(0xFFBBDEFB),
-                                          fontSize: 13,
+                                          fontSize: 11,
                                         ),
                                       ),
-                                    ],
-                                  ),
-                                ],
-                                if (user.address != null && user.address!.isNotEmpty) ...[
-                                  const SizedBox(height: 2),
-                                  Row(
-                                    children: [
-                                      const Icon(
-                                        Icons.location_on,
-                                        size: 14,
-                                        color: Color(0xFFBBDEFB),
-                                      ),
-                                      const SizedBox(width: 4),
-                                      Expanded(
-                                        child: Text(
-                                          user.address!,
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: const TextStyle(
-                                            color: Color(0xFFBBDEFB),
-                                            fontSize: 13,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
+                                    ),
+                                  ],
+                                ),
                               ],
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 8),
+                      decoration: BoxDecoration(
+                        color: AppColors.textWhite.withOpacity(0.15),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Row(
+                        children: [
+                          Text(
+                            'Current Balance',
+                            style: TextStyle(
+                              color: AppColors.textWhite.withOpacity(0.9),
+                              fontSize: 11,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          const Spacer(),
+                          Text(
+                            NumberFormat.currency(
+                                    locale: 'en_IN',
+                                    symbol: AppConstants.rupeeSymbol,
+                                    decimalDigits: 0)
+                                .format(balance),
+                            style: TextStyle(
+                              color: balance >= 0
+                                  ? const Color(0xFFC8E6C9)
+                                  : const Color(0xFFFFCDD2),
+                              fontSize: 16,
+                              fontWeight: FontWeight.w700,
                             ),
                           ),
                         ],
                       ),
-                      const SizedBox(height: 14),
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                        decoration: BoxDecoration(
-                          color: AppColors.textWhite.withOpacity(0.15),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Row(
-                          children: [
-                            Text(
-                              'Current Balance',
-                              style: TextStyle(
-                                color: AppColors.textWhite.withOpacity(0.9),
-                                fontSize: 13,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                            const Spacer(),
-                            Text(
-                              NumberFormat.currency(
-                                      locale: 'en_IN',
-                                      symbol: AppConstants.rupeeSymbol,
-                                      decimalDigits: 0)
-                                  .format(balance),
-                              style: TextStyle(
-                                color: balance >= 0 ? const Color(0xFFC8E6C9) : const Color(0xFFFFCDD2),
-                                fontSize: 20,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             ),
             automaticallyImplyLeading: true,
             actions: [
+              Obx(() => controller.isGeneratingPdf.value
+                  ? const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 12),
+                      child: SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                        ),
+                      ),
+                    )
+                  : IconButton(
+                      onPressed: () => controller.exportUserStatement(user.id),
+                      icon: const Icon(Icons.picture_as_pdf_outlined),
+                      tooltip: 'Export Statement',
+                    )),
               IconButton(
                 onPressed: () {
                   controller.openEditUser(user);
@@ -310,9 +338,11 @@ class _UserDetailsBody extends StatelessWidget {
                                   userName: user.name,
                                   showUser: false,
                                   onTap: () async {
-                                    final ok = await controller.deleteTransaction(txn.id);
+                                    final ok =
+                                        await controller.deleteTransaction(txn.id);
                                     if (ok) {
-                                      Get.snackbar('Deleted', 'Transaction removed');
+                                      Get.snackbar(
+                                          'Deleted', 'Transaction removed');
                                     }
                                   },
                                 ))
@@ -376,7 +406,7 @@ class _UserEditDialogWrap extends StatelessWidget {
       contentPadding: EdgeInsets.zero,
       backgroundColor: colors.card,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      content: Obx(() => SizedBox(
+      content: SizedBox(
             width: double.maxFinite,
             child: SingleChildScrollView(
               padding: const EdgeInsets.all(20),
@@ -509,7 +539,7 @@ class _UserEditDialogWrap extends StatelessWidget {
                 ),
               ),
             ),
-          )),
+          ),
     );
   }
 }

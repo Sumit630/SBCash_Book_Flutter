@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import '../../app/constants/app_constants.dart';
 import '../../data/models/transaction_model.dart';
 import '../../data/models/user_model.dart';
+import '../../data/services/pdf_service.dart';
 import '../users/users_controller.dart';
 
 class TransactionsController extends GetxController {
@@ -11,6 +12,7 @@ class TransactionsController extends GetxController {
   final RxString filterType = AppConstants.filterAll.obs;
   final RxString selectedUserId = AppConstants.filterAll.obs;
   final RxString searchQuery = ''.obs;
+  final RxBool isGeneratingPdf = false.obs;
 
   List<TransactionModel> get allTransactions {
     final list = _usersController.transactions.toList();
@@ -67,5 +69,38 @@ class TransactionsController extends GetxController {
     filterType.value = AppConstants.filterAll;
     selectedUserId.value = AppConstants.filterAll;
     searchQuery.value = '';
+  }
+
+  Future<void> exportToPdf() async {
+    isGeneratingPdf.value = true;
+    try {
+      UserModel? selectedUser;
+      if (selectedUserId.value != AppConstants.filterAll) {
+        selectedUser = usersList.firstWhere((u) => u.id == selectedUserId.value);
+      }
+
+      await PdfService.generateTransactionReport(
+        transactions: filteredTransactions,
+        allUsers: usersList,
+        selectedUser: selectedUser,
+        totalDeposit: filteredTotalDeposit,
+        totalWithdrawal: filteredTotalWithdrawal,
+        netBalance: filteredTotalDeposit - filteredTotalWithdrawal,
+      );
+      
+      Get.snackbar(
+        'Success',
+        'Statement generated successfully',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    } catch (e) {
+      Get.snackbar(
+        'Error',
+        'Failed to generate statement: $e',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    } finally {
+      isGeneratingPdf.value = false;
+    }
   }
 }

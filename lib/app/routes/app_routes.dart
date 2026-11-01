@@ -12,6 +12,7 @@ class AppRoutes {
   static const String withdrawal = '/withdrawal';
   static const String transactions = '/transactions';
   static const String settings = '/settings';
+  static const String analytics = '/analytics';
   static const String changeMpin = '/change-mpin';
   static const String resetMpin = '/reset-mpin';
 }

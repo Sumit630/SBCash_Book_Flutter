@@ -13,9 +13,19 @@ class DashboardController extends GetxController {
   }
 
   String get totalUsers => _usersController.users.length.toString();
-  String get totalDeposit => _formatNumber(_usersController.totalDepositAll);
+  String get totalDeposit => _formatCurrency(_usersController.totalDepositAll);
   String get totalWithdrawal => _formatNumber(_usersController.totalWithdrawalAll);
-  String get netBalance => _formatNumber(_usersController.netBalance);
+  String get netBalance => _formatCurrency(_usersController.netBalance);
+
+  /// Indian digit grouping via the `en_IN` locale (e.g. 1,25,000).
+  /// The ₹ symbol is added by the summary card, so it is omitted here.
+  static final NumberFormat _indianNumberFormat = NumberFormat.currency(
+    locale: 'en_IN',
+    symbol: '',
+    decimalDigits: 0,
+  );
+
+  String _formatCurrency(double val) => _indianNumberFormat.format(val).trim();
 
   String _formatNumber(double val) {
     if (val >= 10000000) return '${(val / 10000000).toStringAsFixed(1)}Cr';
@@ -26,6 +36,7 @@ class DashboardController extends GetxController {
   void goToUsers() => Get.toNamed(AppRoutes.users);
   void goToTransactions() => Get.toNamed(AppRoutes.transactions);
   void goToSettings() => Get.toNamed(AppRoutes.settings);
+  void goToAnalytics() => Get.toNamed(AppRoutes.analytics);
   void goToDeposit() => Get.toNamed(AppRoutes.deposit);
   void goToWithdrawal() => Get.toNamed(AppRoutes.withdrawal);
 }

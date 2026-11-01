@@ -6,6 +6,7 @@ import '../../app/routes/app_routes.dart';
 import '../../data/models/user_model.dart';
 import '../../data/models/transaction_model.dart';
 import '../../data/services/local_storage_service.dart';
+import '../../data/services/pdf_service.dart';
 import '../../widgets/confirmation_dialog.dart';
 
 class UsersController extends GetxController {
@@ -15,6 +16,7 @@ class UsersController extends GetxController {
   final RxList<TransactionModel> transactions = <TransactionModel>[].obs;
   final RxBool isLoading = true.obs;
   final RxString searchQuery = ''.obs;
+  final RxBool isGeneratingPdf = false.obs;
 
   final GlobalKey<FormState> userFormKey = GlobalKey<FormState>();
   final TextEditingController nameController = TextEditingController();
@@ -286,5 +288,41 @@ class UsersController extends GetxController {
 
   void goToUserDetails(UserModel user) {
     Get.toNamed(AppRoutes.userDetails, arguments: {'userId': user.id});
+  }
+
+  Future<void> exportUserStatement(String userId) async {
+    isGeneratingPdf.value = true;
+    try {
+      final user = findUserById(userId);
+      if (user == null) return;
+
+      final userTxns = getUserTransactions(userId);
+      final dep = getUserTotalDeposit(userId);
+      final wd = getUserTotalWithdrawal(userId);
+      final bal = getUserBalance(userId);
+
+      await PdfService.generateTransactionReport(
+        transactions: userTxns,
+        allUsers: users.toList(),
+        selectedUser: user,
+        totalDeposit: dep,
+        totalWithdrawal: wd,
+        netBalance: bal,
+      );
+
+      Get.snackbar(
+        'Success',
+        'Statement generated successfully',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    } catch (e) {
+      Get.snackbar(
+        'Error',
+        'Failed to generate statement: $e',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    } finally {
+      isGeneratingPdf.value = false;
+    }
   }
 }

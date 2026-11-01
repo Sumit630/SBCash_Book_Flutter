@@ -19,6 +19,23 @@ class TransactionsView extends GetView<TransactionsController> {
       appBar: AppBar(
         title: const Text('Transactions'),
         actions: [
+          Obx(() => controller.isGeneratingPdf.value
+              ? const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  child: SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                    ),
+                  ),
+                )
+              : IconButton(
+                  onPressed: controller.exportToPdf,
+                  icon: const Icon(Icons.picture_as_pdf_outlined),
+                  tooltip: 'Export PDF',
+                )),
           Obx(() {
             final hasFilter = controller.filterType.value != AppConstants.filterAll ||
                 controller.selectedUserId.value != AppConstants.filterAll ||

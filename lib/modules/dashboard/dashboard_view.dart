@@ -69,18 +69,14 @@ class DashboardView extends GetView<DashboardController> {
                                     ),
                                   ),
                                 ),
-                                InkWell(
-                                  onTap: controller.goToSettings,
-                                  borderRadius: BorderRadius.circular(10),
-                                  child: Container(
-                                    padding: const EdgeInsets.all(8),
-                                    decoration: BoxDecoration(
-                                      color: AppColors.textWhite.withOpacity(0.15),
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    child: const Icon(Icons.settings_outlined,
-                                        color: AppColors.textWhite, size: 22),
+                                IconButton(
+                                  onPressed: controller.goToAnalytics,
+                                  icon: const Icon(
+                                    Icons.analytics_outlined,
+                                    color: AppColors.textWhite,
+                                    size: 26,
                                   ),
+                                  tooltip: 'Analytics',
                                 ),
                               ],
                             ),
@@ -529,7 +525,7 @@ class DashboardView extends GetView<DashboardController> {
                     ],
                   ),
                 ),
-                const SizedBox(width: 64), // reserved space for the centered FAB
+                const SizedBox(width: 80), // reserved space for the centered FAB
                 Expanded(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -538,6 +534,9 @@ class DashboardView extends GetView<DashboardController> {
                           Icons.history, 'History', false,
                           controller.goToTransactions,
                           badge: count),
+                      _buildNavItem(context, Icons.settings_outlined,
+                          Icons.settings, 'Settings', false,
+                          controller.goToSettings),
                     ],
                   ),
                 ),

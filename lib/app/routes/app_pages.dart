@@ -17,6 +17,8 @@ import '../../modules/transactions/transactions_view.dart';
 import '../../modules/transactions/transactions_controller.dart';
 import '../../modules/settings/settings_view.dart';
 import '../../modules/settings/settings_controller.dart';
+import '../../modules/analytics/analytics_view.dart';
+import '../../modules/analytics/analytics_controller.dart';
 
 class AppPages {
   AppPages._();
@@ -77,6 +79,11 @@ class AppPages {
       name: AppRoutes.settings,
       page: () => const SettingsView(),
       binding: BindingsBuilder.put(() => SettingsController()),
+    ),
+    GetPage(
+      name: AppRoutes.analytics,
+      page: () => const AnalyticsView(),
+      binding: BindingsBuilder.put(() => AnalyticsController()),
     ),
   ];
 }
